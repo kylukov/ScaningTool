@@ -1,45 +1,10 @@
 import socket
 import json
-from checkers import RunningProcessChecker, FirewallChecker
+from sockets import Socket as sockets
 from process import Process
 import time
 import threading
 from queue import Queue
-import psutil
-import subprocess
-
-
-def GetProtocolType(port):
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)
-        result = sock.connect_ex(('localhost', port))
-
-        if result == 0:
-            protocol_name = socket.getservbyport(port)
-            return protocol_name
-        else:
-            print(f"Port {port} is closed or unavailable")
-    except:
-        return
-
-
-def is_process_secure(pid):
-    try:
-        # Получаем статус AppArmor
-        apparmor_status = subprocess.check_output(["aa_status"])
-        # Преобразуем вывод в строку
-        apparmor_status = apparmor_status.decode("utf-8")
-        # Ищем указанный PID в выводе
-        if f"({pid})" in apparmor_status:
-            # Если процесс связан с AppArmor, значит безопасен
-            return True
-        else:
-            # Иначе процесс не связан с AppArmor, значит небезопасен
-            return False
-    except Exception:
-        # Если возникла ошибка, считаем процесс небезопасным
-        return False
 
 
 def GetIPv4():
@@ -107,6 +72,7 @@ def AuthDetection(port):
 
 
 def ScanPort():
+    a = []
     ip = GetIPv4()
     port_range = input("Введите диапазон портов для сканирования (например, 1-65535): ").split("-")
     start_port = int(port_range[0])
@@ -119,19 +85,20 @@ def ScanPort():
         s.settimeout(0.1)
         result = s.connect_ex((ip, port))
         if result == 0:
-            print(f"Port {port} is open: Name {RunningProcessChecker.CheckSocket(port)}")
-            GetProtocolType(port)
-            GetSocketsInfo(ip, port)
+            print(f"Port {port} is open")
+            sk = sockets.Socket(port)
+            sk.showSocket()
         s.close()
 
 
+"""
 def GetSocketsInfo(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((host, port))
 
     data = {
         "Name: ": RunningProcessChecker.CheckSocket(port),
-        "Protocol type: ": GetProtocolType(port),
+        # "Protocol type: ": GetProtocolType(port),
         "Dangerous: ": "dangerous" if port in open("dangerous.txt", 'r') else "neutral",
         "Host: ": sock.getpeername()[0],
         "Port: ": sock.getpeername()[1],
@@ -141,10 +108,11 @@ def GetSocketsInfo(host, port):
     }
     with open("data.json", 'a') as f:
         f.write(json.dumps(data) + '\n')
-
+"""
 
 def main():
     print(GetIPv4())
+    ScanPort()
     Process.openedProcess()
 
 

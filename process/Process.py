@@ -15,11 +15,15 @@ def openedProcess():
             # выводим имя процесса, если он открывал файл
             for file in files:
                 if file and file.fd and proc.pid != current_pid:
-                    print(f"Process '{proc.name()}' (PID: {proc.pid}). {is_process_secure(current_pid)}")
+                    #print(f"Process '{proc.name()}' (PID: {proc.pid}). {is_process_secure(current_pid)}")
+                    a.append(str(f"Process {proc.name()} (PID {proc.pid})"))
+
 
         except Exception as e:
             # если возникает ошибка при попытке получения списка файловых дескрипторов, игнорируем процесс
             pass
+    for item in set(a):
+        print(item)
 
 
 def is_process_secure(pid):

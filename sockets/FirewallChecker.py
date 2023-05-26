@@ -9,9 +9,9 @@ def FirewallDetection(port):
         try:
             result = sock.connect_ex((host, port))
             if result == 0:
-                return "-"
+                return "Not detected"
             else:
-                return "?"
+                return True
         except socket.gaierror:
             print('Ошибка при подключении к хосту')
         finally:
