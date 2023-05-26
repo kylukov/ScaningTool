@@ -1,7 +1,4 @@
 import socket
-import json
-from process import KillProcess
-import process
 from sockets import Socket as sockets
 import time
 import threading
@@ -78,7 +75,7 @@ def GetSocketsInfo(host, port):
     data = {
         "Name: ": RunningProcessChecker.CheckSocket(port),
         # "Protocol type: ": GetProtocolType(port),
-        "Dangerous: ": "dangerous" if port in open("dangerous.txt", 'r') else "neutral",
+        "Dangerous: ": "dangerous" if port in open("dangerous_sockets.txt", 'r') else "neutral",
         "Host: ": sock.getpeername()[0],
         "Port: ": sock.getpeername()[1],
         "Socket family: ": sock.family,
