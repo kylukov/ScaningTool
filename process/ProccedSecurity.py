@@ -2,10 +2,20 @@ import psutil
 
 
 def checkProcessSec(pid):
-    process = psutil.Process(pid)
-    uids = process.uids()
+    # Получаем список всех запущенных процессов
+    processes = psutil.process_iter()
 
-    if uids[0] != user_id or uids[1] != group_id:
-        print("Процесс запущен с недопустимыми уровнями привилегий")
-    else:
-        print("Процесс безопасен")
+    # Проходимся по всем процессам
+    for process in processes:
+        try:
+            # Получаем информацию о процессе
+            process_info = process.as_dict(attrs=['pid', 'name', 'cmdline'])
+
+            # Проверяем, что процесс запущен из доверенного источника
+            if 'trusted_application' not in process_info['cmdline']:
+                print(f"Process {process_info['name']} with PID {process_info['pid']} is not trusted")
+            else:
+                print(f"Process {process_info['name']} with PID {process_info['pid']} is trusted")
+        except psutil.NoSuchProcess:
+            pass
+

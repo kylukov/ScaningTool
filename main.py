@@ -1,7 +1,8 @@
 import socket
 import json
+from process import KillProcess
+import process
 from sockets import Socket as sockets
-from process import Process
 import time
 import threading
 from queue import Queue
@@ -88,10 +89,13 @@ def GetSocketsInfo(host, port):
         f.write(json.dumps(data) + '\n')
 """
 
+
 def main():
     print(GetIPv4())
     ScanPort()
-    Process.openedProcess()
+    # process.Process.openedProcess()
+    # KillProcess.DetectProcess()
+
 
 
 if __name__ == '__main__':

@@ -1,6 +1,8 @@
 import psutil
 import subprocess
 
+import process.ProccedSecurity
+
 
 def openedProcess():
     current_pid = psutil.Process().pid
@@ -15,7 +17,7 @@ def openedProcess():
             # выводим имя процесса, если он открывал файл
             for file in files:
                 if file and file.fd and proc.pid != current_pid:
-                    #print(f"Process '{proc.name()}' (PID: {proc.pid}). {is_process_secure(current_pid)}")
+                    #print(f"Process '{proc.name()}' (PID: {proc.pid}). {is_process_secure(current_pid)} {process.ProccedSecurity.checkProcessSec(current_pid)}")
                     a.append(str(f"Process {proc.name()} (PID {proc.pid})"))
 
 
@@ -24,6 +26,7 @@ def openedProcess():
             pass
     for item in set(a):
         print(item)
+    return a
 
 
 def is_process_secure(pid):
